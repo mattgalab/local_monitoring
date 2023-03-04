@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  prometheus:
+    image: bitnami/prometheus:latest
+    ports:
+      - 9090:9090
+    networks:
+      - monitoring-net
+    volumes:
+      - C:\docker_persistence\local_monitoring\monitoring\prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+      - C:\docker_persistence\local_monitoring\monitoring\prometheus:/opt/bitnami/data
+  grafana:
+    image: bitnami/grafana:latest
+    ports:
+      - 3000:3000
+    networks:
+      - monitoring-net
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  alertmanager:
+    image: bitnami/alertmanager:latest
+    ports:
+      - 9093:9093
+    networks:
+      - monitoring-net
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - 3100:3100
+    networks:
+      - monitoring-net
+    volumes:
+      - C:\docker_persistence\local_monitoring\monitoring:/mnt/config
+    command: --config.file=/mnt/config/loki-config.yaml
+
+  promtail:
+    image: grafana/promtail:2.7.4
+    ports:
+      # debug dashboard http://localhost:9080/service-discovery
+      - 9080:9080
+    volumes:
+      - C:\docker_persistence\local_monitoring\monitoring\promtail-config.yaml:/mnt/config/promtail-config.yaml
+      - C:\docker_persistence\local_monitoring\monitoring\promtail\log:/var/log
+    networks:
+      - monitoring-net
+    command: --config.file=/mnt/config/promtail-config.yaml
+
+networks:
+  monitoring-net:
