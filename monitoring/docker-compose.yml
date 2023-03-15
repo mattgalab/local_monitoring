@@ -8,8 +8,8 @@ services:
     networks:
       - monitoring-net
     volumes:
-      - C:\docker_persistence\local_monitoring\monitoring\prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
-      - C:\docker_persistence\local_monitoring\monitoring\prometheus:/opt/bitnami/data
+      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+      - ./prometheus:/opt/bitnami/data
 
   grafana:
     image: bitnami/grafana:latest
@@ -34,7 +34,7 @@ services:
     networks:
       - monitoring-net
     volumes:
-      - C:\docker_persistence\local_monitoring\monitoring:/mnt/config
+      - ./:/mnt/config
     command: --config.file=/mnt/config/loki-config.yaml
 
   promtail:
@@ -43,8 +43,8 @@ services:
       # debug dashboard http://localhost:9080/service-discovery
       - 9080:9080
     volumes:
-      - C:\docker_persistence\local_monitoring\monitoring\promtail-config.yaml:/mnt/config/promtail-config.yaml
-      - C:\docker_persistence\local_monitoring\monitoring\promtail\log:/var/log
+      - ./promtail-config.yaml:/mnt/config/promtail-config.yaml
+      - ./promtail/log:/var/log
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
     command: --config.file=/mnt/config/promtail-config.yaml
