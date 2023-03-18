@@ -12,39 +12,59 @@ scrape_configs:
   - job_name: system
     pipeline_stages:
       - regex:
-
-#       - json:
-#           expressions:
-#             stream: stream
-#             timestamp: time
-#             message: message
-#             loggerName: loggerName
-#             level: level
-#             thrown:
-#       - json:
-#            expressions:
-#              stack_message: message
-#              commonElementCount: commonElementCount
-#              localizedMessage: localizedMessage
-#              name: name
-#              extendedStackTrace: extendedStackTrace
-#            source: thrown
-#       - template:
-#           source: output_msg
-#           template: |
-#             {{- if .level -}}
-#               {{ .level }}, message: {{ .message }}, Logger: {{ .loggerName }}
-#               {{- if .thrown -}}
-#                 STACKTRACE
-#                 Name: {{ .name }}, CommonElementCount: {{ .commonElementCount }}
-#                 -----------------------
-#                 {{ .extendedStackTrace }}
-#               {{- end -}}
-#             {{- else -}}
-#               {{ .Entry }}
-#             {{- end -}}
-#       - output:
-#           source: output_msg
+#          expression: "^(\s*[(]{1}.*[)]{1}\s*[.]{3}\s*)([{]{1}.*[}]{1}\s*)$"
+          expression: '^\s*\(\s*(?P<teil1>.+)\)\s*\.\.\.\s*(?P<teil2>{.+})\s*$'
+          source: message
+          teil1: teil1
+      - template:
+          source: teil1
+          template: |
+            {{ . }}
+      - output:
+          source: teil1
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          loggername: loggerName
+          level: level
+          job: varlogs
+          __path__: /var/log/*log
+  - job_name: test
+    pipeline_stages:
+       - json:
+           expressions:
+             stream: stream
+             timestamp: time
+             message: message
+             loggerName: loggerName
+             level: level
+             thrown:
+             source:
+       - json:
+            expressions:
+              stack_message: message
+              commonElementCount: commonElementCount
+              localizedMessage: localizedMessage
+              name: name
+              extendedStackTrace: extendedStackTrace
+            source: thrown
+       - template:
+           source: output_msg
+           template: |
+             {{- if .level -}}
+               {{ .level }}, message: {{ .message }}, Logger: {{ .loggerName }}
+               {{- if .thrown -}}
+                 STACKTRACE
+                 Name: {{ .name }}, CommonElementCount: {{ .commonElementCount }}
+                 -----------------------
+                 {{ .extendedStackTrace }}
+               {{- end -}}
+             {{- else -}}
+               {{ .Entry }}
+             {{- end -}}
+       - output:
+           source: output_msg
     static_configs:
       - targets:
           - localhost
