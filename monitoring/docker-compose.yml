@@ -53,5 +53,6 @@ services:
     networks:
       - monitoring-net
 
+name: monitoring
 networks:
   monitoring-net:
