@@ -1,0 +1,1 @@
+start C:\k8s_test\local_monitoring\monitoring\windowsExporter\windows_exporter-0.22.0-amd64.exe --config.file="C:\k8s_test\local_monitoring\monitoring\windowsExporter\config.yml"
