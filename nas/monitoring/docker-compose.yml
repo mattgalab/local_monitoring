@@ -8,8 +8,8 @@ services:
     networks:
       - monitoring-net
     volumes:
-      - /mnt/HD/HD_a2/Public/monitoring/prometheus.yml:/opt/prometheus/conf/prometheus.yml
-      - /mnt/HD/HD_a2/Public/monitoring/prometheus:/opt/data
+      - /mnt/HD/HD_a2/Public/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /mnt/HD/HD_a2/Public/monitoring/prometheus:/etc/data
 
   grafana:
     image: grafana/grafana:9.4.3
