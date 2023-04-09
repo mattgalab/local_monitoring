@@ -12,7 +12,7 @@ services:
       - /mnt/HD/HD_a2/Public/monitoring/prometheus:/opt/data
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:9.4.3
     ports:
       - 3000:3000
     networks:
@@ -20,15 +20,8 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
 
-  alertmanager:
-    image: prom/alertmanager:latest
-    ports:
-      - 9093:9093
-    networks:
-      - monitoring-net
-
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:2.8.0-arm
     ports:
       - 3100:3100
     networks:
@@ -38,7 +31,7 @@ services:
     command: --config.file=/mnt/config/loki-config.yaml
 
   promtail:
-    image: grafana/promtail:latest
+    image: grafana/promtail:2.8.0-arm
     ports:
       # debug dashboard http://localhost:9080/service-discovery
       - 9080:9080
